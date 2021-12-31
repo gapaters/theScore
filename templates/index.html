@@ -21,7 +21,9 @@
 			  <option value="TD - ASC">Total Rushing Touchdowns - ASC</option>
 			  <option value="TD - DESC">Total Rushing Touchdowns - DESC</option>
 			</select> 
-			<button type="submit" form="table-filter">Filter</button>
+			<button type="submit" form="table-filter" value="filter">Filter</button>
+			<button type="submit" form="table-filter" value="download">Download Filtered Data</button>
+			<a href="" hidden id="download_link" download="rushing_data_export.csv"></a>
 		</form>
 		<div id="table-data">{{ data | safe }}</div>
 	</body>
