@@ -40,7 +40,8 @@ def get_rushing_html(player_name=None, category_sort=None):
         rushing_data = rushing_data[rushing_data['Player'].str.contains(player_name)]
 
     if category_sort:
-        rushing_data = rushing_data.sort_values(by=[category_sort])
+        category_sort = category_sort.split(' - ')
+        rushing_data = rushing_data.sort_values(by=[category_sort[0]], ascending=[category_sort[1] == 'ASC'])
 
     rushing_data = rushing_data.style.format(
         precision=1, thousands=''
