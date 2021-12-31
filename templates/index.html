@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+		<script src="{{url_for('static', filename='rushing.js')}}" async></script>
+		<h1>
+			Hello from Flask & Docker
+		</h1>
+	</head>
+	<body>
+		<form id="table-filter">
+			<label for="player-name">Filter by player name:</label>
+			<input name="player_name" id="player-name"></input>
+			<label for="category_sort">Sort a category:</label>
+			<select name="category_sort" id="category_sort">
+				<option value=""></option>
+			  <option value="Yds">Total Rushing Yards</option>
+			  <option value="Lng">Longest Rush</option>
+			  <option value="TD">Total Rushing Touchdowns</option>
+			</select> 
+			<button type="submit" form="table-filter">Filter</button>
+		</form>
+		<div id="table-data">{{ data | safe }}</div>
+	</body>
+</html>
+
+

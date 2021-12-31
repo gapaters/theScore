@@ -1,0 +1,25 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #febd03;
+    text-align: right;
+    padding: 5px;
+    text-align: center;
+}
+
+tr:nth-child(odd) {
+    background-color: #a4b3cc;
+}
+
+tr:nth-child(even) {
+    background-color: #0b4082;
+}
+
+.touchdown-highlight {
+    color: #5efc82;
+    font-weight: bold;
+}
