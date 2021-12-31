@@ -13,22 +13,27 @@ def get_rushing_dataframe():
     except FileNotFoundError:
         rushing_data = pandas.read_json('rushing.json', dtype={'Yds': str, 'Lng': str})
         rushing_data['Yds'] = rushing_data['Yds'].str.replace(',', '').astype(int)
-        rushing_data['Lng'] = rushing_data['Lng'].apply(highlight_touchdown_rush)
 
-        # rushing_data = rushing_data.style.applymap(highlight_touchdown_rush, subset=pandas.IndexSlice[:, ['Lng']])
+        # Remove and store all 'T' values for better sorting and styling
+        rushing_data['Lng Touchdown'] = False
+        rushing_data['Lng Touchdown'] = rushing_data['Lng Touchdown'].mask(rushing_data.Lng.str.contains('T'), True)
+        rushing_data['Lng'] = rushing_data['Lng'].str.replace('T', '').astype(int)
 
         rushing_data.to_pickle('cached_rushing_dataframe.pk1')
 
     return rushing_data
 
 
-def highlight_touchdown_rush(rush):
-    if 'T' in rush:
-        return f'<div class="touchdown-highlight" title="Touchdown Scored">{rush[:-1]}*</div>'
-    return rush
+def highlight_touchdown_rush(x):
+    ''' Apply a material green background to longest rush touchdowns to make them stand out '''
+    mask = x['Lng Touchdown'] == 1
+    style_dataframe = pandas.DataFrame('', index=x.index, columns=x.columns)
+    style_dataframe.loc[mask, 'Lng'] = 'background-color: #5efc82;'
+    return style_dataframe
 
 
 def get_rushing_html(player_name=None, category_sort=None):
+    ''' Filter and style the dataframe to render in the expected format '''
     rushing_data = get_rushing_dataframe()
 
     if player_name:
@@ -37,11 +42,15 @@ def get_rushing_html(player_name=None, category_sort=None):
     if category_sort:
         rushing_data = rushing_data.sort_values(by=[category_sort])
 
-    return rushing_data.to_html(escape=False)
+    rushing_data = rushing_data.style.format(
+        precision=1, thousands=''
+    ).hide_index().hide_columns(['Lng Touchdown'])
+    rushing_data.apply(highlight_touchdown_rush, axis=None)
+    return rushing_data.render()
 
 
 @app.route('/')
-def hello_geek():
+def rushing_table():
     rushing_data = get_rushing_html()
     return render_template('index.html', data=rushing_data)
 
